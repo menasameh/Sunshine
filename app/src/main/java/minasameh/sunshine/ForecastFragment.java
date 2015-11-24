@@ -7,17 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
-public class MainActivityFragment extends Fragment {
+public class ForecastFragment extends Fragment {
 
     private ArrayAdapter<String> adapter;
+    private String url = "api.openweathermap.org/data/2.5/forecast/daily?q=Alexandria,EG&APPID=b55e3c1c7aa050f6fae3829be574f2e8&units=metric&cnt=7";
 
-
-    public MainActivityFragment() {
+    public ForecastFragment() {
     }
 
     @Override
@@ -27,9 +28,9 @@ public class MainActivityFragment extends Fragment {
 
         String[] array = {"today - sunny - 88/63", "tomorrow - foggy - 88/63", "weds - cloudy - 88/63"};
 
-        List<String> list = new ArrayList<String>(Arrays.asList(array));
+        List<String> list = new ArrayList<>(Arrays.asList(array));
 
-        adapter = new ArrayAdapter<String>(
+        adapter = new ArrayAdapter<>(
                 getActivity(),
                 R.layout.list_item_forecast,
                 R.id.list_item_forecast_textView,
@@ -38,6 +39,8 @@ public class MainActivityFragment extends Fragment {
         ListView lv = (ListView)rootView.findViewById(R.id.listview_forecast);
 
         lv.setAdapter(adapter);
+
+        new FetchWeatherTask().execute(url);
 
         return rootView;
     }
