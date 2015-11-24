@@ -40,6 +40,7 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_refresh:
+                new FetchWeatherTask().execute(url);
                 return true;
 
         }
@@ -65,7 +66,7 @@ public class ForecastFragment extends Fragment {
 
         lv.setAdapter(adapter);
 
-        new FetchWeatherTask().execute(url);
+
 
         return rootView;
     }
