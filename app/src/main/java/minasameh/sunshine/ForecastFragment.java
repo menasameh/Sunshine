@@ -3,6 +3,9 @@ package minasameh.sunshine;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -19,6 +22,28 @@ public class ForecastFragment extends Fragment {
     private String url = "api.openweathermap.org/data/2.5/forecast/daily?q=Alexandria,EG&APPID=b55e3c1c7aa050f6fae3829be574f2e8&units=metric&cnt=7";
 
     public ForecastFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.forecast_fragment,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.action_refresh:
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
