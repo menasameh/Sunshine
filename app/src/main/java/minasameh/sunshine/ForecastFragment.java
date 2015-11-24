@@ -19,7 +19,6 @@ import java.util.List;
 public class ForecastFragment extends Fragment {
 
     private ArrayAdapter<String> adapter;
-    private String url = "api.openweathermap.org/data/2.5/forecast/daily?q=Alexandria,EG&APPID=b55e3c1c7aa050f6fae3829be574f2e8&units=metric&cnt=7";
 
     public ForecastFragment() {
     }
@@ -40,7 +39,7 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_refresh:
-                new FetchWeatherTask().execute(url);
+                new FetchWeatherTask().execute("21411");
                 return true;
 
         }
