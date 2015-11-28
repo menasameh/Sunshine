@@ -24,6 +24,7 @@ public class SettingsActivity extends PreferenceActivity
         // For all preferences, attach an OnPreferenceChangeListener so the UI summary can be
         // updated when the preference changes.
         bindPreferenceSummaryToValue(findPreference(getString(R.string.postal_code_key)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.temp_key)));
     }
 
     /**
@@ -49,8 +50,8 @@ public class SettingsActivity extends PreferenceActivity
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString(getString(R.string.postal_code_key), stringValue);
-        editor.apply();
+
+
 
         if (preference instanceof ListPreference) {
             // For list preferences, look up the correct display value in
@@ -58,12 +59,17 @@ public class SettingsActivity extends PreferenceActivity
             ListPreference listPreference = (ListPreference) preference;
             int prefIndex = listPreference.findIndexOfValue(stringValue);
             if (prefIndex >= 0) {
-                preference.setSummary(listPreference.getEntries()[prefIndex]);
+                String temp = (String)listPreference.getEntries()[prefIndex];
+                preference.setSummary(temp);
+                editor.putString(getString(R.string.temp_key), temp);
             }
         } else {
             // For other preferences, set the summary to the value's simple string representation.
+            editor.putString(getString(R.string.postal_code_key), stringValue);
             preference.setSummary(stringValue);
         }
+
+        editor.apply();
         return true;
     }
 

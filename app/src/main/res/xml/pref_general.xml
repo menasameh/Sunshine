@@ -6,7 +6,13 @@
         android:defaultValue="@string/postal_code_default"
         android:title="@string/postal_code_title"
         android:summary="@string/postal_code_summary"
-        >
+        />
+    <ListPreference
+        android:key="@string/temp_key"
+        android:defaultValue="@string/temp_default"
+        android:title="@string/temp_title"
+        android:summary="@string/temp_summary"
+        android:entries="@array/items"
+        android:entryValues="@array/values" />
 
-    </EditTextPreference>
 </PreferenceScreen>

@@ -20,7 +20,7 @@
 
     //temperature type
     <string name="temp_key" translatable="false">temp</string>
-    <string name="temp_default" translatable="false">temp</string>
+    <string name="temp_default" translatable="false">1</string>
     <string name="temp_title">Temperature</string>
     <string name="temp_summary">temperature type</string>
 

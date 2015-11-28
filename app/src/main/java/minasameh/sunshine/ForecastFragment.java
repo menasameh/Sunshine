@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 public class ForecastFragment extends Fragment {
     public static String forecastString = "forecastString";
     protected ArrayAdapter<String> adapter;
+    int tempType;
 
     public ForecastFragment() {
     }
@@ -47,7 +49,12 @@ public class ForecastFragment extends Fragment {
         String postal = settings.getString(
                 getString(R.string.postal_code_key),
                 getString(R.string.postal_code_default));
-        new FetchWeatherTask().execute(postal);
+        String type = settings.getString(
+                getString(R.string.temp_key),
+                getString(R.string.temp_default));
+        tempType = type.equals("metric")?1:2;
+        Toast.makeText(getActivity(), type, Toast.LENGTH_SHORT).show();
+        new FetchWeatherTask().execute(postal, type);
     }
 
 
@@ -199,6 +206,11 @@ public class ForecastFragment extends Fragment {
                 double high = temperatureObject.getDouble(OWM_MAX);
                 double low = temperatureObject.getDouble(OWM_MIN);
 
+                if(tempType == 2){
+                    high = high*9/5 +32;
+                    low = low*9/5 +32;
+                }
+
                 highAndLow = formatHighLows(high, low);
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
 
@@ -211,13 +223,13 @@ public class ForecastFragment extends Fragment {
 
 
         @Override
-        protected String[] doInBackground(String... URL) {
+        protected String[] doInBackground(String... args) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
 
-            if (URL.length == 0) {
+            if (args.length == 0) {
                 return null;
             }
 
@@ -240,7 +252,7 @@ public class ForecastFragment extends Fragment {
                 final String APPID_PARAM = "APPID";
 
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                        .appendQueryParameter(QUERY_PARAM, URL[0])
+                        .appendQueryParameter(QUERY_PARAM, args[0])
                         .appendQueryParameter(FORMAT_PARAM, format)
                         .appendQueryParameter(UNITS_PARAM, units)
                         .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
