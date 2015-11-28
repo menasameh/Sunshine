@@ -1,6 +1,8 @@
 package minasameh.sunshine;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,7 +59,14 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_refresh:
-                new FetchWeatherTask().execute("21411");
+                SharedPreferences settings = getActivity().getSharedPreferences(
+                        SettingsActivity.PREFS_NAME,
+                        Context.MODE_PRIVATE);
+                String postal = settings.getString(
+                        getString(R.string.postal_code_key),
+                        getString(R.string.postal_code_default));
+                Toast.makeText(getActivity(), postal, Toast.LENGTH_SHORT).show();
+                new FetchWeatherTask().execute(postal);
                 return true;
 
         }
