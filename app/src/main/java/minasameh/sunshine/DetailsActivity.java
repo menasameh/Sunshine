@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -57,6 +58,17 @@ public class DetailsActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
 
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
+            TextView tv = (TextView) rootView.findViewById(R.id.weather_text);
+            String text = getActivity().getIntent().getStringExtra(ForecastFragment.forecastString);
+            if(text != null){
+                tv.setText(text);
+            }
+            else{
+                tv.setText("no data received");
+            }
+
+
             return rootView;
         }
     }
