@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,8 +31,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class ForecastFragment extends Fragment {
@@ -43,10 +40,28 @@ public class ForecastFragment extends Fragment {
     public ForecastFragment() {
     }
 
+    public void updateWeather(){
+        SharedPreferences settings = getActivity().getSharedPreferences(
+                SettingsActivity.PREFS_NAME,
+                Context.MODE_PRIVATE);
+        String postal = settings.getString(
+                getString(R.string.postal_code_key),
+                getString(R.string.postal_code_default));
+        new FetchWeatherTask().execute(postal);
+    }
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
     }
 
     @Override
@@ -59,16 +74,8 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_refresh:
-                SharedPreferences settings = getActivity().getSharedPreferences(
-                        SettingsActivity.PREFS_NAME,
-                        Context.MODE_PRIVATE);
-                String postal = settings.getString(
-                        getString(R.string.postal_code_key),
-                        getString(R.string.postal_code_default));
-                Toast.makeText(getActivity(), postal, Toast.LENGTH_SHORT).show();
-                new FetchWeatherTask().execute(postal);
+                updateWeather();
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -78,15 +85,11 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView  = inflater.inflate(R.layout.fragment_main, container, false);
 
-        String[] array = {"today - sunny - 88/63", "tomorrow - foggy - 88/63", "weds - cloudy - 88/63"};
-
-        List<String> list = new ArrayList<>(Arrays.asList(array));
-
         adapter = new ArrayAdapter<>(
                 getActivity(),
                 R.layout.list_item_forecast,
                 R.id.list_item_forecast_textView,
-                list);
+                new ArrayList<String>());
 
         ListView lv = (ListView)rootView.findViewById(R.id.listview_forecast);
 
