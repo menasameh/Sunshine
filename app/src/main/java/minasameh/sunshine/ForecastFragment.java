@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +36,6 @@ import java.util.ArrayList;
 public class ForecastFragment extends Fragment {
     public static String forecastString = "forecastString";
     protected ArrayAdapter<String> adapter;
-    int tempType;
 
     public ForecastFragment() {
     }
@@ -49,12 +47,8 @@ public class ForecastFragment extends Fragment {
         String postal = settings.getString(
                 getString(R.string.postal_code_key),
                 getString(R.string.postal_code_default));
-        String type = settings.getString(
-                getString(R.string.temp_key),
-                getString(R.string.temp_default));
-        tempType = type.equals("metric")?1:2;
-        Toast.makeText(getActivity(), type, Toast.LENGTH_SHORT).show();
-        new FetchWeatherTask().execute(postal, type);
+
+        new FetchWeatherTask().execute(postal);
     }
 
 
@@ -134,6 +128,17 @@ public class ForecastFragment extends Fragment {
          */
         private String formatHighLows(double high, double low) {
             // For presentation, assume the user doesn't care about tenths of a degree.
+            SharedPreferences settings = getActivity().getSharedPreferences(
+                    SettingsActivity.PREFS_NAME,
+                    Context.MODE_PRIVATE);
+            String type = settings.getString(
+                    getString(R.string.temp_key),
+                    getString(R.string.temp_default));
+
+            if(type.equals("imperial")){
+                high = high*9/5 +32;
+                low = low*9/5 +32;
+            }
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
 
@@ -205,11 +210,6 @@ public class ForecastFragment extends Fragment {
                 JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE);
                 double high = temperatureObject.getDouble(OWM_MAX);
                 double low = temperatureObject.getDouble(OWM_MIN);
-
-                if(tempType == 2){
-                    high = high*9/5 +32;
-                    low = low*9/5 +32;
-                }
 
                 highAndLow = formatHighLows(high, low);
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
